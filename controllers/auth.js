@@ -1,9 +1,9 @@
 import User from "../models/user.js";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const createToken = (_id) => {
-    return jwt.sign({_id}, process.env.JWTSECRET, {expiresIn: '6h'});
-}
+  return jwt.sign({ _id }, process.env.JWTSECRET, { expiresIn: "6h" });
+};
 
 export const loginUser = async (req, res) => {
   const { ethAddress } = req.body;
@@ -12,9 +12,9 @@ export const loginUser = async (req, res) => {
   if (user) {
     const token = createToken(user._id);
 
-    res.status(200).json({ user, token});
+    res.status(200).json({ user, token });
   } else {
-    res.status(400).json({ exists: false });
+    res.status(404).json(false);
   }
 };
 
@@ -22,8 +22,7 @@ export const signupUser = async (req, res) => {
   const { ethAddress, username, displayName } = req.body;
 
   try {
-    const user = await User.create(ethAddress, username, displayName);
-
+    const user = await User.create({ ethAddress, username, displayName });
     const token = createToken(user._id);
 
     res.status(200).json({ user, token });

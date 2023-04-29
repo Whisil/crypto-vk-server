@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 
 import postRoutes from './routes/posts.js';
 import authRoutes from './routes/auth.js';
+import { extractUserId } from "./middleware/extractUserId.js";
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(cors());
 
 app.use('/api/auth', authRoutes);
-app.use('/api/post', postRoutes);
+app.use('/api/post', extractUserId, postRoutes);
 
 mongoose
   .connect(process.env.MONGO_URL, {

@@ -7,7 +7,7 @@ const postSchema = new Schema(
     text: String,
     createdBy: Object,
     media: String,
-    likes: Array,
+    likesCount: Number,
   },
   { timestamps: true, versionKey: false, collection: "Post" }
 );

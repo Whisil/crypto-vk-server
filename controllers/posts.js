@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Post from "../models/post.js";
 import User from "../models/user.js";
 
@@ -12,7 +13,13 @@ export const getPosts = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-  const newPost = new Post(req.body);
+  const { text, media } = req.body;
+
+  const newPost = new Post({
+    createdBy: new mongoose.Types.ObjectId(req.userId),
+    text,
+    media,
+  });
 
   try {
     await newPost.save();

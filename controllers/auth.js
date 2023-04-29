@@ -10,6 +10,7 @@ export const loginUser = async (req, res) => {
   const user = await User.findOne({ ethAddress });
 
   if (user) {
+    req.user = { id: user._id };
     const token = createToken(user._id);
 
     res.status(200).json({ user, token });
@@ -24,6 +25,7 @@ export const signupUser = async (req, res) => {
   try {
     const user = await User.create({ ethAddress, username, displayName });
     const token = createToken(user._id);
+    req.user = { id: user._id };
 
     res.status(200).json({ user, token });
   } catch (err) {

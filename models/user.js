@@ -18,8 +18,9 @@ const userSchema = new Schema(
       required: true,
       type: String,
     },
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true, versionKey: false, collection: "User" }
 );
 
 export default mongoose.model("User", userSchema);

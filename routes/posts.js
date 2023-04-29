@@ -4,6 +4,6 @@ import { getPosts, createPost } from "../controllers/posts.js";
 const router = Router();
 
 router.get('/', getPosts)
-router.post('/', createPost);
+router.post('/create', createPost);
 
 export default Router;

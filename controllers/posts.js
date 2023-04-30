@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Post from "../models/post.js";
 import User from "../models/user.js";
+import fs from 'fs';
 
 export const getPosts = async (req, res) => {
   try {
@@ -15,7 +16,7 @@ export const getPosts = async (req, res) => {
 export const createPost = async (req, res) => {
   const { text } = req.body;
   const file = req.file;
-
+  
   try {
     const newPost = new Post({
       createdBy: new mongoose.Types.ObjectId(req.userId),
@@ -39,6 +40,10 @@ export const createPost = async (req, res) => {
 
     res.status(201).json(newPost);
   } catch (err) {
+    if (file) {
+      fs.unlinkSync(file.path);
+    }
+
     res.status(409).json({ message: err.message });
   }
 };

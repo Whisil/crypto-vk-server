@@ -13,12 +13,13 @@ export const getPosts = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-  const { text, media } = req.body;
+  const { text } = req.body;
+  const file = req.file;
 
   const newPost = new Post({
     createdBy: new mongoose.Types.ObjectId(req.userId),
     text,
-    media,
+    mediaURL: `${req.protocol}://${req.get('host')}/public/media/${file.filename}`,
   });
 
   try {

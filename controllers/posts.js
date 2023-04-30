@@ -26,7 +26,7 @@ export const createPost = async (req, res) => {
     await newPost.save();
 
     await User.findOneAndUpdate(
-      { _id: req.user.id },
+      { _id: req.userId },
       { $push: { posts: newPost._id } },
       { new: true }
     );

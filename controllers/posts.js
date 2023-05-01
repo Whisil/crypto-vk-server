@@ -5,7 +5,10 @@ import fs from "fs";
 
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate("createdBy");
+    const posts = await Post.find().populate(
+      "createdBy",
+      "-_id -posts -likes -createdAt -updatedAt"
+    );
 
     res.status(200).json(posts);
   } catch (err) {
@@ -24,7 +27,9 @@ export const createPost = async (req, res) => {
       mediaURL: file
         ? `${req.protocol}://${req.get("host")}/public/media/${file.filename}`
         : undefined,
-    }).then(post => post.populate('createdBy'));
+    }).then((post) =>
+      post.populate("createdBy", "-_id -posts -likes -createdAt -updatedAt")
+    );
 
     try {
       await User.findOneAndUpdate(

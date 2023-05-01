@@ -18,8 +18,8 @@ const userSchema = new Schema(
       required: true,
       type: String,
     },
-    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Like" }],
+    posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+    likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
   },
   { timestamps: true, versionKey: false, collection: "User" }
 );

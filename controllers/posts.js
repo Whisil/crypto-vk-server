@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import Post from "../models/post.js";
 import User from "../models/user.js";
-import fs from 'fs';
+import fs from "fs";
 
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().populate("createdBy");
 
     res.status(200).json(posts);
   } catch (err) {
@@ -16,15 +16,15 @@ export const getPosts = async (req, res) => {
 export const createPost = async (req, res) => {
   const { text } = req.body;
   const file = req.file;
-  
+
   try {
-    const newPost = new Post({
+    const newPost = await Post.create({
       createdBy: new mongoose.Types.ObjectId(req.userId),
       text,
-      mediaURL: `${req.protocol}://${req.get("host")}/public/media/${
-        file.filename
-      }`,
-    });
+      mediaURL: file
+        ? `${req.protocol}://${req.get("host")}/public/media/${file.filename}`
+        : undefined,
+    }).then(post => post.populate('createdBy'));
 
     try {
       await User.findOneAndUpdate(
@@ -35,8 +35,6 @@ export const createPost = async (req, res) => {
     } catch (err) {
       throw err;
     }
-
-    await newPost.save();
 
     res.status(201).json(newPost);
   } catch (err) {

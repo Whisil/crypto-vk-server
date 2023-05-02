@@ -25,7 +25,7 @@ export const createPost = async (req, res) => {
       createdBy: new mongoose.Types.ObjectId(req.userId),
       text,
       mediaURL: file
-        ? `${req.protocol}://${req.get("host")}/public/media/${file.filename}`
+        ? `${req.protocol}://${req.get("host")}/media/${file.filename}`
         : undefined,
     }).then((post) =>
       post.populate("createdBy", "-_id -posts -likes -createdAt -updatedAt")

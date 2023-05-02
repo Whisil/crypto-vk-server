@@ -17,7 +17,7 @@ const postSchema = new Schema(
       required: false,
       type: String,
     },
-    likesCount: {
+    likeCount: {
       required: true,
       default: 0,
       type: Number,

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getPosts, createPost } from "../controllers/posts.js";
+import { getPosts, createPost, deletePost } from "../controllers/posts.js";
 import multer from "multer";
 import { extractUserId } from "../middleware/extractUserId.js";
 
@@ -25,5 +25,6 @@ const upload = multer({
 
 router.get("/", getPosts);
 router.post("/create", upload.single("file"), createPost);
+router.post("/delete", upload.single("file"), deletePost);
 
 export default router;

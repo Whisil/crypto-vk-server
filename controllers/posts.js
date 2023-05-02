@@ -50,3 +50,15 @@ export const createPost = async (req, res) => {
     res.status(409).json({ message: err.message });
   }
 };
+
+export const deletePost = async (req, res) => {
+  const { postId } = req.body;
+
+  try{
+    await Post.findByIdAndRemove(postId);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+
+  res.status(204);
+}

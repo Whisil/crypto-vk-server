@@ -52,13 +52,13 @@ export const createPost = async (req, res) => {
 };
 
 export const deletePost = async (req, res) => {
-  const { postId } = req.body;
+  const postId = req.params.postId;
 
   try {
     const post = await Post.findByIdAndRemove(postId);
     const userId = post.createdBy;
 
-    const user = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       userId,
       {
         $pull: { posts: postId },
@@ -66,13 +66,18 @@ export const deletePost = async (req, res) => {
       { new: true }
     );
 
-    const filePath = post.mediaURL.split(`/`);
+    if (post.mediaURL) {
+      const filePath = post.mediaURL.split(`/`);
 
-    fs.unlink(__dirname + `/public/media/${filePath[filePath.length - 1]}`, (err) => {
-      if (err) throw err;
-    });
+      fs.unlink(
+        __dirname + `/public/media/${filePath[filePath.length - 1]}`,
+        (err) => {
+          if (err) throw err;
+        }
+      );
+    }
 
-    res.status(204).json(user.posts);
+    res.status(204).end();
   } catch (err) {
     res.status(404).json({ message: err.message });
   }

@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { getPosts, createPost, deletePost } from "../controllers/posts.js";
 import multer from "multer";
-import { extractUserId } from "../middleware/extractUserId.js";
 
 const router = Router();
 

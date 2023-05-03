@@ -19,7 +19,23 @@ const app = express();
 app.use(express.static("public"));
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
-app.use(cors());
+
+const allowedOrigins = [
+  "https://crypto-vk.vercel.app/",
+  "http://localhost:3000",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new getSystemErrorMap("Not allowed by CORS"));
+      }
+    },
+  })
+);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/post", extractUserId, postRoutes);

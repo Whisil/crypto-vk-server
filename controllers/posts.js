@@ -54,11 +54,26 @@ export const createPost = async (req, res) => {
 export const deletePost = async (req, res) => {
   const { postId } = req.body;
 
-  try{
-    await Post.findByIdAndRemove(postId);
+  try {
+    const post = await Post.findByIdAndRemove(postId);
+    const userId = post.createdBy;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { posts: postId },
+      },
+      { new: true }
+    );
+
+    const filePath = post.mediaURL.split(`/`);
+
+    fs.unlink(__dirname + `/public/media/${filePath[filePath.length - 1]}`, (err) => {
+      if (err) throw err;
+    });
+
+    res.status(204).json(user.posts);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
-
-  res.status(204);
-}
+};

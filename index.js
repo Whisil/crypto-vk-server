@@ -3,12 +3,16 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 import postRoutes from "./routes/posts.js";
 import authRoutes from "./routes/auth.js";
 import { extractUserId } from "./middleware/extractUserId.js";
 
 dotenv.config();
+
+global.__dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 

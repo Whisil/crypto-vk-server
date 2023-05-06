@@ -51,6 +51,46 @@ export const createPost = async (req, res) => {
   }
 };
 
+export const likePost = async () => {
+  const postId = req.params.postId;
+
+  try {
+    await Post.findByIdAndUpdate(
+      { _id: postId },
+      { $inc: { likeCount: 1 } },
+      (err) => {
+        if (err) {
+          throw err;
+        }
+      }
+    );
+
+    res.status(204).end();
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
+export const deleteLikeFromPost = async () => {
+  const postId = req.params.postId;
+
+  try {
+    await Post.findByIdAndUpdate(
+      { _id: postId },
+      { $dec: { likeCount: 1 } },
+      (err) => {
+        if (err) {
+          throw err;
+        }
+      }
+    );
+
+    res.status(204).end();
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
 export const deletePost = async (req, res) => {
   const postId = req.params.postId;
 

@@ -17,11 +17,7 @@ const postSchema = new Schema(
       required: false,
       type: String,
     },
-    likeCount: {
-      required: true,
-      default: 0,
-      type: Number,
-    },
+    likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
   },
   { timestamps: true, versionKey: false, collection: "Post" }
 );

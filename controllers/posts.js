@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import Post from "../models/post.js";
-import User from "../models/user.js";
+import Post from "../models/Post.js";
+import User from "../models/User.js";
 import fs from "fs";
 
 export const getPosts = async (req, res) => {
@@ -48,46 +48,6 @@ export const createPost = async (req, res) => {
     }
 
     res.status(409).json({ message: err.message });
-  }
-};
-
-export const likePost = async () => {
-  const postId = req.params.postId;
-
-  try {
-    await Post.findByIdAndUpdate(
-      { _id: postId },
-      { $inc: { likeCount: 1 } },
-      (err) => {
-        if (err) {
-          throw err;
-        }
-      }
-    );
-
-    res.status(204).end();
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-};
-
-export const deleteLikeFromPost = async () => {
-  const postId = req.params.postId;
-
-  try {
-    await Post.findByIdAndUpdate(
-      { _id: postId },
-      { $dec: { likeCount: 1 } },
-      (err) => {
-        if (err) {
-          throw err;
-        }
-      }
-    );
-
-    res.status(204).end();
-  } catch (err) {
-    res.status(500).send(err.message);
   }
 };
 

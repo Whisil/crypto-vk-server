@@ -56,7 +56,7 @@ export const likePost = async (req, res) => {
   const postId = req.params.postId;
 
   try {
-    const userWallet = await User.findAndUpdate(
+    const userWallet = await User.findByIdAndUpdate(
       userId,
       { $push: { likes: postId } },
       { new: true }
@@ -64,7 +64,7 @@ export const likePost = async (req, res) => {
 
     await Post.findByIdAndUpdate(postId, { $push: { likes: userWallet } });
 
-    req.status(204).end();
+    res.status(204).end();
   } catch (err) {
     res.status(400).send(err.message);
   }
@@ -75,7 +75,7 @@ export const removeLike = async (req, res) => {
   const postId = req.params.postId;
 
   try {
-    const userWallet = await User.findAndUpdate(
+    const userWallet = await User.findByIdAndUpdate(
       userId,
       { $pop: { likes: postId } },
       { new: true }
@@ -83,7 +83,7 @@ export const removeLike = async (req, res) => {
 
     await Post.findByIdAndUpdate(postId, { $pop: { likes: userWallet } });
 
-    req.status(204).end();
+    res.status(204).end();
   } catch (err) {
     res.status(400).send(err.message);
   }

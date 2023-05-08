@@ -10,7 +10,6 @@ import helmet from "helmet";
 import postRoutes from "./routes/posts.js";
 import authRoutes from "./routes/auth.js";
 import commentRoutes from "./routes/comment.js";
-import likeRoutes from "./routes/like.js";
 import { extractUserId } from "./middleware/extractUserId.js";
 
 dotenv.config();
@@ -27,7 +26,6 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/post", extractUserId, postRoutes);
 app.use("/api/comment", extractUserId, commentRoutes);
-app.use("/api/like", extractUserId, likeRoutes);
 
 mongoose
   .connect(process.env.MONGO_URL, {

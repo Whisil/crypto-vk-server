@@ -19,7 +19,7 @@ const userSchema = new Schema(
       type: String,
     },
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
-    likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
+    likes: [{ type: Schema.Types.ObjectId, ref: "Post" }],
   },
   { timestamps: true, versionKey: false, collection: "User" }
 );

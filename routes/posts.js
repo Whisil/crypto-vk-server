@@ -24,6 +24,7 @@ const upload = multer({
 
 router.get("/", getPosts);
 router.post("/create", upload.single("file"), createPost);
+router.post("/like/:postId?type=");
 router.delete("/delete/:postId", upload.single("file"), deletePost);
 
 export default router;

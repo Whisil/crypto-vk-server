@@ -51,6 +51,44 @@ export const createPost = async (req, res) => {
   }
 };
 
+export const likePost = async (req, res) => {
+  const userId = req.userId;
+  const postId = req.params.postId;
+
+  try {
+    const userWallet = await User.findAndUpdate(
+      userId,
+      { $push: { likes: postId } },
+      { new: true }
+    );
+
+    await Post.findByIdAndUpdate(postId, { $push: { likes: userWallet } });
+
+    req.status(204).end();
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+};
+
+export const removeLike = async (req, res) => {
+  const userId = req.userId;
+  const postId = req.params.postId;
+
+  try {
+    const userWallet = await User.findAndUpdate(
+      userId,
+      { $pop: { likes: postId } },
+      { new: true }
+    );
+
+    await Post.findByIdAndUpdate(postId, { $pop: { likes: userWallet } });
+
+    req.status(204).end();
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+};
+
 export const deletePost = async (req, res) => {
   const postId = req.params.postId;
 

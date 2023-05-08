@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import helmet from "helmet";
 
 import postRoutes from "./routes/posts.js";
 import authRoutes from "./routes/auth.js";
@@ -18,10 +19,9 @@ global.__dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
+app.use(helmet());
 app.use(express.static("public"));
-
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
-
 app.use(cors());
 
 app.use("/api/auth", authRoutes);

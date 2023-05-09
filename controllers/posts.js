@@ -56,13 +56,19 @@ export const likePost = async (req, res) => {
   const postId = req.params.postId;
 
   try {
-    const userWallet = await User.findByIdAndUpdate(
-      userId,
-      { $push: { likes: postId } },
-      { new: true }
-    );
+    const userLikes = await User.find(userId, { likes: 1 });
+    const postLikes = await Post.find(postId, { likes: 1 });
+    console.log(userLikes);
 
-    await Post.findByIdAndUpdate(postId, { $push: { likes: userWallet } });
+    if (!userLikes.includes(postId) && !postLikes.includes(userId)) {
+      postLikes.push(userId);
+      await postLikes.save();
+
+      userLikes.push(postId);
+      await userLikes.save();
+    } else {
+      throw new Error("You've already liked it, check your code");
+    }
 
     res.status(204).end();
   } catch (err) {
@@ -75,13 +81,13 @@ export const removeLike = async (req, res) => {
   const postId = req.params.postId;
 
   try {
-    const userWallet = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       userId,
       { $pop: { likes: postId } },
       { new: true }
     );
 
-    await Post.findByIdAndUpdate(postId, { $pop: { likes: userWallet } });
+    await Post.findByIdAndUpdate(postId, { $pop: { likes: user.ethAddress } });
 
     res.status(204).end();
   } catch (err) {

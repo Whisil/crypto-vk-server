@@ -52,16 +52,15 @@ export const createPost = async (req, res) => {
 };
 
 export const likePost = async (req, res) => {
-  const userId = new mongoose.Types.ObjectId(req.userId);
-  const postId = new mongoose.Types.ObjectId(req.params.postId);
+  const userId = req.userId;
+  const postId = req.params.postId;
 
   try {
-    const user = await User.findOne({ _id: userId }, { likes: 1, ethAddress: 1 });
+    const user = await User.findOne({ _id: userId }, { likes: 1 });
     const postLikes = await Post.findOne({ _id: postId }, { likes: 1 });
-    console.log(user, postId);
 
     if (!user.likes.includes(postId) && !postLikes.likes.includes(userId)) {
-      postLikes.likes.push(user.ethAddress);
+      postLikes.likes.push(user._id);
       await postLikes.save();
 
       user.likes.push(postId);
@@ -81,13 +80,9 @@ export const removeLike = async (req, res) => {
   const postId = req.params.postId;
 
   try {
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { $pop: { likes: postId } },
-      { new: true }
-    );
+    await User.findOneAndUpdate({ _id: userId }, { $pull: { likes: postId } });
 
-    await Post.findByIdAndUpdate(postId, { $pop: { likes: user.ethAddress } });
+    await Post.findOneAndUpdate({ _id: postId }, { $pull: { likes: userId } });
 
     res.status(204).end();
   } catch (err) {

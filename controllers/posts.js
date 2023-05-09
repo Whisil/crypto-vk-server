@@ -52,20 +52,20 @@ export const createPost = async (req, res) => {
 };
 
 export const likePost = async (req, res) => {
-  const userId = req.userId;
-  const postId = req.params.postId;
+  const userId = new mongoose.Types.ObjectId(req.userId);
+  const postId = new mongoose.Types.ObjectId(req.params.postId);
 
   try {
-    const userLikes = await User.find(userId, { likes: 1 });
-    const postLikes = await Post.find(postId, { likes: 1 });
-    console.log(userLikes);
+    const user = await User.findOne({ _id: userId }, { likes: 1, ethAddress: 1 });
+    const postLikes = await Post.findOne({ _id: postId }, { likes: 1 });
+    console.log(user, postId);
 
-    if (!userLikes.includes(postId) && !postLikes.includes(userId)) {
-      postLikes.push(userId);
+    if (!user.likes.includes(postId) && !postLikes.likes.includes(userId)) {
+      postLikes.likes.push(user.ethAddress);
       await postLikes.save();
 
-      userLikes.push(postId);
-      await userLikes.save();
+      user.likes.push(postId);
+      await user.save();
     } else {
       throw new Error("You've already liked it, check your code");
     }

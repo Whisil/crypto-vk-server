@@ -7,15 +7,16 @@ const commentSchema = new Schema(
       type: String,
     },
     createdBy: {
-      require: true,
+      required: true,
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    likeCount: {
+    onPost: {
       required: true,
-      default: 0,
-      type: Number,
+      type: Schema.Types.ObjectId,
+      ref: "Post",
     },
+    likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true, versionKey: false, collection: "Comment" }
 );

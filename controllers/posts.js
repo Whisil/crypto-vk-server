@@ -4,7 +4,7 @@ import User from "../models/User.js";
 import fs from "fs";
 
 export const getPosts = async (req, res) => {
-  const postId = req.params.postId;
+  const postId = new mongoose.Types.ObjectId(req.params.postId);
   try {
     if (postId) {
       const post = await Post.findOne(postId).populate(

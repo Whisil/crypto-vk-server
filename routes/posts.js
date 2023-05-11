@@ -22,7 +22,7 @@ const upload = multer({
   },
 });
 
-router.get("/", getPosts);
+router.get("/:postId?", getPosts);
 router.post("/create", upload.single("file"), createPost);
 router.post("/like/:postId", likePost);
 router.post("/removeLike/:postId", removeLike);

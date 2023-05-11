@@ -4,13 +4,23 @@ import User from "../models/User.js";
 import fs from "fs";
 
 export const getPosts = async (req, res) => {
+  const postId = req.params.postId;
   try {
-    const posts = await Post.find().populate(
-      "createdBy",
-      "-_id -posts -likes -createdAt -updatedAt"
-    );
+    if (postId) {
+      const post = await Post.findOne(postId).populate(
+        "createdBy",
+        "-_id -posts -likes -createdAt -updatedAt"
+      );
 
-    res.status(200).json(posts);
+      res.status(200).json(post);
+    } else {
+      const posts = await Post.find().populate(
+        "createdBy",
+        "-_id -posts -likes -createdAt -updatedAt"
+      );
+
+      res.status(200).json(posts);
+    }
   } catch (err) {
     res.status(404).json({ message: err.message });
   }

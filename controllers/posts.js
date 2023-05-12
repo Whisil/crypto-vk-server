@@ -4,10 +4,11 @@ import User from "../models/User.js";
 import fs from "fs";
 
 export const getPosts = async (req, res) => {
-  const postId = new mongoose.Types.ObjectId(req.params.postId);
+  const postId = req.params.postId;
+
   try {
     if (postId) {
-      const post = await Post.findOne(postId).populate(
+      const post = await Post.findOne({ _id: postId }).populate(
         "createdBy",
         "-_id -posts -likes -createdAt -updatedAt"
       );
@@ -16,7 +17,7 @@ export const getPosts = async (req, res) => {
     } else {
       const posts = await Post.find().populate(
         "createdBy",
-        "-_id -posts -likes -createdAt -updatedAt"
+        "-_id -posts -likes -createdAt -updatedAt -comments"
       );
 
       res.status(200).json(posts);

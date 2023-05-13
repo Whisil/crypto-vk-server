@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import fs from "fs";
+import { fileDelete } from "../utils/fileDelete.js";
 
 export const getPosts = async (req, res) => {
   const postId = req.params.postId;
@@ -112,19 +113,11 @@ export const deletePost = async (req, res) => {
       userId,
       {
         $pull: { posts: postId },
-      },
-      { new: true }
+      }
     );
 
     if (post.mediaURL) {
-      const filePath = post.mediaURL.split(`/`);
-
-      fs.unlink(
-        __dirname + `/public/media/${filePath[filePath.length - 1]}`,
-        (err) => {
-          if (err) throw err;
-        }
-      );
+      fileDelete(post.mediaURL);
     }
 
     res.status(204).end();

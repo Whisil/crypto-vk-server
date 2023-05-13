@@ -1,8 +1,14 @@
+import mongoose from "mongoose";
+
 const Schema = mongoose.Schema;
 
 const commentSchema = new Schema(
   {
     text: {
+      required: false,
+      type: String,
+    },
+    mediaURL: {
       required: false,
       type: String,
     },

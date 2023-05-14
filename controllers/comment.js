@@ -4,8 +4,12 @@ import User from "../models/User.js";
 import { fileDelete } from "../utils/fileDelete.js";
 
 export const getComments = async (req, res) => {
+  const postId = req.params.postId;
+
   try {
-    const comments = await Comment.find().populate("createdBy");
+    const comments = await Comment.find({ onPost: postId }).populate(
+      "createdBy"
+    );
 
     res.status(200).json(comments);
   } catch (err) {

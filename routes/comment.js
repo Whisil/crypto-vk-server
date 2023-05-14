@@ -7,7 +7,7 @@ import {
 
 const router = Router();
 
-router.get("/", getComments);
+router.get("/:postId", getComments);
 router.post("/create", createComment);
 router.delete("/delete/:commentId", deleteComment);
 

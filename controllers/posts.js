@@ -9,10 +9,9 @@ export const getPosts = async (req, res) => {
 
   try {
     if (postId) {
-      const post = await Post.findOne({ _id: postId }).populate(
-        "createdBy",
-        "-_id -posts -likes -createdAt -updatedAt"
-      );
+      const post = await Post.findOne({ _id: postId })
+        .populate("createdBy", "-_id -posts -likes -createdAt -updatedAt")
+        .populate("comments");
 
       res.status(200).json(post);
     } else {
@@ -109,12 +108,9 @@ export const deletePost = async (req, res) => {
     const post = await Post.findByIdAndRemove(postId);
     const userId = post.createdBy;
 
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        $pull: { posts: postId },
-      }
-    );
+    await User.findByIdAndUpdate(userId, {
+      $pull: { posts: postId },
+    });
 
     if (post.mediaURL) {
       fileDelete(post.mediaURL);

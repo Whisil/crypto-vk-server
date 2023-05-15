@@ -18,7 +18,8 @@ export const getComments = async (req, res) => {
 };
 
 export const createComment = async (req, res) => {
-  const { text, postId } = req.body;
+  const { text } = req.body;
+  const postId = req.params.postId;
   const file = req.file;
 
   try {

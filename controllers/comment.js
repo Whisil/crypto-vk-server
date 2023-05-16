@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Comment from "../models/Comment.js";
 import User from "../models/User.js";
+import Post from "../models/Post.js";
 import { fileDelete } from "../utils/fileDelete.js";
 
 export const getComments = async (req, res) => {
@@ -19,6 +20,7 @@ export const getComments = async (req, res) => {
 
 export const createComment = async (req, res) => {
   const { text } = req.body;
+  const userId = req.userId;
   const postId = req.params.postId;
   const file = req.file;
 
@@ -31,6 +33,24 @@ export const createComment = async (req, res) => {
         ? `${req.protocol}://${req.get("host")}/media/${file.filename}`
         : undefined,
     }).then((comment) => comment.populate("createdBy"));
+
+    try {
+      await User.findOneAndUpdate(
+        { _id: userId },
+        { $push: { comments: newComment._id } }
+      );
+    } catch (err) {
+      throw err;
+    }
+
+    try {
+      await Post.findOneAndUpdate(
+        { _id: postId },
+        { $push: { comments: newComment._id } }
+      );
+    } catch (err) {
+      throw err;
+    }
 
     res.status(201).json(newComment);
   } catch (err) {
@@ -47,6 +67,15 @@ export const deleteComment = async (req, res) => {
     await User.findByIdAndUpdate(req.userId, {
       $pull: { comments: commentId },
     });
+
+    try {
+      await Post.findOneAndUpdate(
+        { _id: comment.onPost },
+        { $pull: { comments: comment._id } }
+      );
+    } catch (err) {
+      throw err;
+    }
 
     if (comment.mediaURL) {
       fileDelete(comment.mediaURL);

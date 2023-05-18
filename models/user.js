@@ -18,6 +18,15 @@ const userSchema = new Schema(
       required: true,
       type: String,
     },
+    bannerURL: {
+      type: String,
+    },
+    avatarURL: {
+      type: String,
+    },
+    bio: {
+      type: String,
+    },
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
     likes: [{ type: Schema.Types.ObjectId, ref: "Post" }],
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],

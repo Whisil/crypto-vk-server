@@ -10,6 +10,7 @@ import helmet from "helmet";
 import postRoutes from "./routes/posts.js";
 import authRoutes from "./routes/auth.js";
 import commentRoutes from "./routes/comment.js";
+import userRoutes from "./routes/user.js";
 import { extractUserId } from "./middleware/extractUserId.js";
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(cors());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/post", extractUserId, postRoutes);
 app.use("/api/comment", extractUserId, commentRoutes);
 

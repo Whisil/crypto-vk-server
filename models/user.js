@@ -20,12 +20,19 @@ const userSchema = new Schema(
     },
     bannerURL: {
       type: String,
+      default: null,
     },
     avatarURL: {
       type: String,
+      default: null,
     },
     bio: {
       type: String,
+      default: null,
+    },
+    websiteURL: {
+      type: String,
+      default: null,
     },
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
     likes: [{ type: Schema.Types.ObjectId, ref: "Post" }],

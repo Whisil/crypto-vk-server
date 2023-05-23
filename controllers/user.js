@@ -57,8 +57,13 @@ export const setSettings = async (req, res) => {
   try {
     const user = await User.findById(userId);
 
+    if (!user) {
+      // res.status(404).json({ message: 'User not found' }).end();
+      console.log('User not found', userId);
+    }
+
     if (
-      username !== undefined &&
+      username &&
       username !== user.username &&
       username.length > 4 &&
       username.length < 35
@@ -67,7 +72,7 @@ export const setSettings = async (req, res) => {
     }
 
     if (
-      displayName !== undefined &&
+      displayName &&
       displayName !== user.displayName &&
       displayName.length > 4 &&
       displayName.length < 35
@@ -75,24 +80,23 @@ export const setSettings = async (req, res) => {
       user.displayName = displayName;
     }
 
-    if (bannerURL !== undefined && bannerURL !== user.bannerURL) {
+    if (bannerURL && bannerURL !== user.bannerURL) {
       user.bannerURL = bannerURL;
     }
 
-    if (avatarURL !== undefined && avatarURL !== user.avatarURL) {
+    if (avatarURL && avatarURL !== user.avatarURL) {
       user.avatarURL = avatarURL;
     }
 
-    if (bio !== undefined && bio !== user.bio) {
+    if (bio && bio !== user.bio) {
       user.bio = bio;
     }
 
-    if (websiteURL !== undefined && websiteURL !== user.websiteURL) {
+    if (websiteURL && websiteURL !== user.websiteURL) {
       user.websiteURL = websiteURL;
     }
 
     await user.save();
-
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });

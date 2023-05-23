@@ -25,7 +25,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(cors());
 
 app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
+app.use("/api/user", extractUserId, userRoutes);
 app.use("/api/post", extractUserId, postRoutes);
 app.use("/api/comment", extractUserId, commentRoutes);
 

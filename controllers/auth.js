@@ -23,6 +23,12 @@ export const signupUser = async (req, res) => {
   const { ethAddress, username, displayName } = req.body;
 
   try {
+    const usernameExists = await User.findOne({ username });
+
+    if (usernameExists) {
+      throw new Error("Username already exists");
+    }
+
     const user = await User.create({ ethAddress, username, displayName });
     const token = createToken(user._id);
     req.user = { id: user._id };

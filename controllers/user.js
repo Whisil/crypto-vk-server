@@ -47,12 +47,13 @@ export const setSettings = async (req, res) => {
   const {
     username,
     displayName,
-    bannerURL = null,
+    banner = null,
     avatarURL = null,
     bio = null,
     websiteURL = null,
   } = req.body;
   const userId = req.userId;
+  const file = req.file;
 
   try {
     const user = await User.findById(userId);
@@ -80,8 +81,10 @@ export const setSettings = async (req, res) => {
       user.displayName = displayName;
     }
 
-    if (bannerURL && bannerURL !== user.bannerURL) {
-      user.bannerURL = bannerURL;
+    const bannerFileURL = `${req.protocol}://${req.get("host")}/media/${file.filename}`;
+    
+    if (file && bannerFileURL !== user.bannerURL) {
+      user.bannerURL = bannerFileURL;
     }
 
     if (avatarURL && avatarURL !== user.avatarURL) {

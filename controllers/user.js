@@ -1,5 +1,20 @@
 import User from "../models/User.js";
 
+const urlParser = (url) => {
+  const httpsRegex = /^https:\/\//i;
+  const slashRegex = /\/$/;
+
+  if (!httpsRegex.test(url)) {
+    url = `https://${url}`;
+  }
+
+  if (!slashRegex.test(url)) {
+    url += "/";
+  }
+
+  return url;
+};
+
 export const getUser = async (req, res) => {
   const userWallet = req.params.userWallet;
 
@@ -47,7 +62,6 @@ export const setSettings = async (req, res) => {
   const {
     username,
     displayName,
-    banner = null,
     avatarURL = null,
     bio = null,
     websiteURL = null,
@@ -59,8 +73,7 @@ export const setSettings = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      // res.status(404).json({ message: 'User not found' }).end();
-      console.log('User not found', userId);
+      res.status(404).json({ message: 'User not found' }).end();
     }
 
     if (
@@ -81,9 +94,10 @@ export const setSettings = async (req, res) => {
       user.displayName = displayName;
     }
 
-    const bannerFileURL = `${req.protocol}://${req.get("host")}/media/${file.filename}`;
-    
     if (file && bannerFileURL !== user.bannerURL) {
+      const bannerFileURL = `${req.protocol}://${req.get("host")}/media/${
+        file.filename
+      }`;
       user.bannerURL = bannerFileURL;
     }
 
@@ -96,7 +110,8 @@ export const setSettings = async (req, res) => {
     }
 
     if (websiteURL && websiteURL !== user.websiteURL) {
-      user.websiteURL = websiteURL;
+      const parsedLink = urlParser(websiteURL);
+      user.websiteURL = parsedLink;
     }
 
     await user.save();

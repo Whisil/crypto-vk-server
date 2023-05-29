@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import helmet from "helmet";
+import compression from "compression";
 
 import postRoutes from "./routes/posts.js";
 import authRoutes from "./routes/auth.js";
@@ -19,6 +20,7 @@ global.__dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
+app.use(compression());
 app.use(
   helmet.crossOriginResourcePolicy({ policy: "cross-origin" })
 );

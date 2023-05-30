@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import { fileDelete } from "../utils/fileDelete.js";
 
 const urlParser = (url) => {
   const httpsRegex = /^https:\/\//i;
@@ -63,6 +64,7 @@ export const setSettings = async (req, res) => {
     username,
     displayName,
     avatarURL = null,
+    oldBanner = null,
     bio = null,
     websiteURL = null,
   } = req.body;
@@ -73,7 +75,7 @@ export const setSettings = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      res.status(404).json({ message: 'User not found' }).end();
+      res.status(404).json({ message: "User not found" }).end();
     }
 
     if (
@@ -94,11 +96,17 @@ export const setSettings = async (req, res) => {
       user.displayName = displayName;
     }
 
+    let bannerFileURL;
+
     if (file && bannerFileURL !== user.bannerURL) {
-      const bannerFileURL = `${req.protocol}://${req.get("host")}/media/${
+      bannerFileURL = `${req.protocol}://${req.get("host")}/media/${
         file.filename
       }`;
       user.bannerURL = bannerFileURL;
+    }
+
+    if (oldBanner && bannerFileURL && oldBanner !== bannerFileURL) {
+      fileDelete(oldBanner);
     }
 
     if (avatarURL && avatarURL !== user.avatarURL) {

@@ -63,13 +63,22 @@ export const setSettings = async (req, res) => {
   const {
     username,
     displayName,
-    avatarURL = null,
     oldBanner = null,
+    oldAvatar = null,
     bio = null,
     websiteURL = null,
   } = req.body;
   const userId = req.userId;
-  const file = req.file;
+  let bannerFile;
+  let avatarFile;
+
+  for (let item of req.files) {
+    if (item.filename.includes("banner")) {
+      bannerFile = item;
+    } else {
+      avatarFile = item;
+    }
+  }
 
   try {
     const user = await User.findById(userId);
@@ -98,19 +107,34 @@ export const setSettings = async (req, res) => {
 
     let bannerFileURL;
 
-    if (file && bannerFileURL !== user.bannerURL) {
+    if (bannerFile) {
+      bannerFile.filename.split(".").pop();
       bannerFileURL = `${req.protocol}://${req.get("host")}/media/${
-        file.filename
+        bannerFile.filename
       }`;
-      user.bannerURL = bannerFileURL;
+      if (bannerFileURL !== user.bannerURL) {
+        user.bannerURL = bannerFileURL;
+      }
     }
 
     if (oldBanner && bannerFileURL && oldBanner !== bannerFileURL) {
       fileDelete(oldBanner);
     }
 
-    if (avatarURL && avatarURL !== user.avatarURL) {
-      user.avatarURL = avatarURL;
+    let avatarFileURL;
+
+    if (avatarFile) {
+      avatarFile.filename.split(".").pop();
+      avatarFileURL = `${req.protocol}://${req.get("host")}/media/${
+        avatarFile.filename
+      }`;
+      if (avatarFileURL !== user.avatarURL) {
+        user.avatarURL = avatarFileURL;
+      }
+    }
+
+    if (oldAvatar && avatarFileURL && oldAvatar !== avatarFileURL) {
+      fileDelete(oldAvatar);
     }
 
     if (bio && bio !== user.bio) {

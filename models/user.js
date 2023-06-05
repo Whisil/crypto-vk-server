@@ -34,6 +34,16 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    followCount: {
+      type: Number,
+      default: 0,
+    },
+    followersCount: {
+      type: Number,
+      default: 0,
+    },
+    follow: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
     likes: [{ type: Schema.Types.ObjectId, ref: "Post" }],
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],

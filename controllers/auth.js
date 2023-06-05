@@ -7,7 +7,9 @@ const createToken = (_id) => {
 
 export const loginUser = async (req, res) => {
   const { ethAddress } = req.body;
-  const user = await User.findOne({ ethAddress });
+  const user = await User.findOne({ ethAddress }).select(
+    "-follow, -followers"
+  );;
 
   if (user) {
     req.user = { id: user._id };
@@ -23,7 +25,7 @@ export const signupUser = async (req, res) => {
   const { ethAddress, username, displayName } = req.body;
 
   try {
-    const usernameExists = await User.findOne({ username });
+    const usernameExists = await User.exists({ username });
 
     if (usernameExists) {
       throw new Error("Username already exists");

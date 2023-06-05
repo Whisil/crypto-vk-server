@@ -20,7 +20,9 @@ export const getUser = async (req, res) => {
   const userWallet = req.params.userWallet;
 
   try {
-    const user = await User.findOne({ ethAddress: userWallet });
+    const user = await User.findOne({ ethAddress: userWallet }).select(
+      "-follow, -followers"
+    );
 
     res.status(200).json(user);
   } catch (err) {
@@ -37,6 +39,7 @@ export const getUserPosts = async (req, res) => {
       populate: {
         path: "createdBy",
         model: "User",
+        select: "-follow -followers",
       },
     });
 
@@ -47,6 +50,7 @@ export const getUserPosts = async (req, res) => {
         populate: {
           path: "createdBy",
           model: "User",
+          select: "-follow -followers",
         },
       });
     }
@@ -81,7 +85,7 @@ export const setSettings = async (req, res) => {
   }
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-follow, -followers");
 
     if (!user) {
       res.status(404).json({ message: "User not found" }).end();

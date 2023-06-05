@@ -4,6 +4,7 @@ import {
   getUserPosts,
   setSettings,
   createFollow,
+  removeFollow,
 } from "../controllers/user.js";
 import { upload } from "../utils/multer.js";
 

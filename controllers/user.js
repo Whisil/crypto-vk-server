@@ -34,19 +34,23 @@ export const getUserPosts = async (req, res) => {
   const userWallet = req.params.userWallet;
 
   try {
-    let query = User.findOne({ ethAddress: userWallet }).populate({
-      path: "posts",
-      populate: {
-        path: "createdBy",
-        model: "User",
-        select: "-follows -followers",
-      },
-    });
+    let query = User.findOne({ ethAddress: userWallet })
+      .select("-follows -followers")
+      .populate({
+        path: "posts",
+        options: { sort: { createAt: -1 } },
+        populate: {
+          path: "createdBy",
+          model: "User",
+          select: "-follows -followers",
+        },
+      });
 
     if (req.params.media) {
-      query = query.populate({
+      query = query.select("-follows -followers").populate({
         path: "posts",
         match: { mediaURL: { $exists: true } },
+        options: { sort: { createAt: -1 } },
         populate: {
           path: "createdBy",
           model: "User",

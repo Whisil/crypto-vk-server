@@ -18,7 +18,7 @@ export const getPosts = async (req, res) => {
       const posts = await Post.find().populate(
         "createdBy",
         "-_id -posts -likes -createdAt -updatedAt -comments"
-      );
+      ).sort({ createdAt: -1 });
 
       res.status(200).json(posts);
     }

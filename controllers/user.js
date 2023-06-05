@@ -21,7 +21,7 @@ export const getUser = async (req, res) => {
 
   try {
     const user = await User.findOne({ ethAddress: userWallet }).select(
-      "-follow, -followers"
+      "-follows, -followers"
     );
 
     res.status(200).json(user);
@@ -39,7 +39,7 @@ export const getUserPosts = async (req, res) => {
       populate: {
         path: "createdBy",
         model: "User",
-        select: "-follow -followers",
+        select: "-follows -followers",
       },
     });
 
@@ -50,7 +50,7 @@ export const getUserPosts = async (req, res) => {
         populate: {
           path: "createdBy",
           model: "User",
-          select: "-follow -followers",
+          select: "-follows -followers",
         },
       });
     }
@@ -85,7 +85,7 @@ export const setSettings = async (req, res) => {
   }
 
   try {
-    const user = await User.findById(userId).select("-follow, -followers");
+    const user = await User.findById(userId).select("-follows, -followers");
 
     if (!user) {
       res.status(404).json({ message: "User not found" }).end();
@@ -154,5 +154,57 @@ export const setSettings = async (req, res) => {
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+export const createFollow = async (req, res) => {
+  try {
+    //current user follows
+    await User.findByIdAndUpdate(
+      { _id: req.userId },
+      {
+        $push: { follow: req.params.followsUserId },
+        $inc: { followsCount: 1 },
+      }
+    );
+
+    //updating the followed user
+    await User.findByIdAndUpdate(
+      { _id: req.followsUserId },
+      {
+        $push: { followers: req.userId },
+        $inc: { followersCount: 1 },
+      }
+    );
+
+    res.status(200).end();
+  } catch (err) {
+    res.status(400).json({ err: err.message });
+  }
+};
+
+export const removeFollow = async (req, res) => {
+  try {
+    //current user unfollows
+    await User.findByIdAndUpdate(
+      { _id: req.userId },
+      {
+        $pull: { follow: req.params.followsUserId },
+        $dec: { followsCount: 1 },
+      }
+    );
+
+    //updating the followed user
+    await User.findByIdAndUpdate(
+      { _id: req.followsUserId },
+      {
+        $pull: { followers: req.userId },
+        $dec: { followersCount: 1 },
+      }
+    );
+
+    res.status(200).end();
+  } catch (err) {
+    res.status(400).json({ err: err.message });
   }
 };

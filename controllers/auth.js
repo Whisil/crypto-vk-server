@@ -8,7 +8,7 @@ const createToken = (_id) => {
 export const loginUser = async (req, res) => {
   const { ethAddress } = req.body;
   const user = await User.findOne({ ethAddress }).select(
-    "-follow, -followers"
+    "-follows, -followers"
   );;
 
   if (user) {

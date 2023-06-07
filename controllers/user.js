@@ -163,18 +163,22 @@ export const setSettings = async (req, res) => {
 
 export const createFollow = async (req, res) => {
   try {
+    const {_id} = await User.findOne({
+      ethAddress: req.params.followedUserWallet,
+    }).select("_id");
+
     //current user follows
     await User.findByIdAndUpdate(
       { _id: req.userId },
       {
-        $push: { follow: req.params.followsUserId },
+        $push: { follow: _id },
         $inc: { followsCount: 1 },
       }
     );
 
     //updating the followed user
     await User.findByIdAndUpdate(
-      { _id: req.followsUserId },
+      { _id: _id },
       {
         $push: { followers: req.userId },
         $inc: { followersCount: 1 },
@@ -193,14 +197,14 @@ export const removeFollow = async (req, res) => {
     await User.findByIdAndUpdate(
       { _id: req.userId },
       {
-        $pull: { follow: req.params.followsUserId },
+        $pull: { follow: req.params.followedUserWallet },
         $dec: { followsCount: 1 },
       }
     );
 
     //updating the followed user
     await User.findByIdAndUpdate(
-      { _id: req.followsUserId },
+      { _id: req.followedUserWallet },
       {
         $pull: { followers: req.userId },
         $dec: { followersCount: 1 },

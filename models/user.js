@@ -34,7 +34,7 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
-    followCount: {
+    followsCount: {
       type: Number,
       default: 0,
     },
@@ -42,7 +42,7 @@ const userSchema = new Schema(
       type: Number,
       default: 0,
     },
-    follow: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    follows: [{ type: Schema.Types.ObjectId, ref: "User" }],
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
     likes: [{ type: Schema.Types.ObjectId, ref: "Post" }],

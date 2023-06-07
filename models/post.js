@@ -23,4 +23,6 @@ const postSchema = new Schema(
   { timestamps: true, versionKey: false, collection: "Post" }
 );
 
+postSchema.index({ createAt: 1 });
+
 export default mongoose.model("Post", postSchema);

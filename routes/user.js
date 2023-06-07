@@ -13,7 +13,7 @@ const router = Router();
 router.get("/:userWallet", getUser);
 router.get("/:userWallet/posts/:media?", getUserPosts);
 router.post("/settings", upload.array("files"), setSettings);
-router.post("/createFollow/:followsUserId", createFollow);
-router.post("/removeFollow/:followsUserId", removeFollow);
+router.post("/createFollow/:followedUserWallet", createFollow);
+router.post("/removeFollow/:followedUserWallet", removeFollow);
 
 export default router;

@@ -24,7 +24,12 @@ export const getUser = async (req, res) => {
       "-follows, -followers"
     );
 
-    res.status(200).json(user);
+    const isFollowed = await User.countDocuments({
+      _id: req.userId,
+      follows: user._id,
+    });
+
+    res.status(200).json({ user, isFollowed: !!isFollowed });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -163,15 +168,24 @@ export const setSettings = async (req, res) => {
 
 export const createFollow = async (req, res) => {
   try {
-    const {_id} = await User.findOne({
+    const { _id } = await User.findOne({
       ethAddress: req.params.followedUserWallet,
     }).select("_id");
+
+    const isFollowed = await User.countDocuments({
+      _id: req.userId,
+      follows: _id,
+    });
+
+    if (!!isFollowed) {
+      res.status(400).json({ err: "You can't follow a second time..." }).end();
+    }
 
     //current user follows
     await User.findByIdAndUpdate(
       { _id: req.userId },
       {
-        $push: { follow: _id },
+        $push: { follows: _id },
         $inc: { followsCount: 1 },
       }
     );
@@ -193,21 +207,34 @@ export const createFollow = async (req, res) => {
 
 export const removeFollow = async (req, res) => {
   try {
+    const { _id } = await User.findOne({
+      ethAddress: req.params.followedUserWallet,
+    }).select("_id");
+
+    const isFollowed = await User.countDocuments({
+      _id: req.userId,
+      follows: _id,
+    });
+
+    if (!!!isFollowed) {
+      res.status(400).json({ err: "You can't unfollow the unfollowed!" }).end();
+    }
+
     //current user unfollows
     await User.findByIdAndUpdate(
       { _id: req.userId },
       {
-        $pull: { follow: req.params.followedUserWallet },
-        $dec: { followsCount: 1 },
+        $pull: { follows: _id },
+        $inc: { followsCount: -1 },
       }
     );
 
     //updating the followed user
     await User.findByIdAndUpdate(
-      { _id: req.followedUserWallet },
+      { _id: _id },
       {
         $pull: { followers: req.userId },
-        $dec: { followersCount: 1 },
+        $inc: { followersCount: -1 },
       }
     );
 

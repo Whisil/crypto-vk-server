@@ -34,10 +34,6 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
-    followsCount: {
-      type: Number,
-      default: 0,
-    },
     followersCount: {
       type: Number,
       default: 0,

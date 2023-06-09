@@ -186,7 +186,6 @@ export const createFollow = async (req, res) => {
       { _id: req.userId },
       {
         $push: { follows: _id },
-        $inc: { followsCount: 1 },
       }
     );
 
@@ -225,7 +224,6 @@ export const removeFollow = async (req, res) => {
       { _id: req.userId },
       {
         $pull: { follows: _id },
-        $inc: { followsCount: -1 },
       }
     );
 

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import Post from "../models/cost.js";
-import User from "../models/user.js";
+import Post from "../models/Post.js";
+import User from "../models/User.js";
 import fs from "fs";
 import { fileDelete } from "../utils/fileDelete.js";
 

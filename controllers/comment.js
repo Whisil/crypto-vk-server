@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import Comment from "../models/comment.js";
-import User from "../models/user.js";
-import Post from "../models/cost.js";
+import Comment from "../models/Comment.js";
+import User from "../models/User.js";
+import Post from "../models/Post.js";
 import { fileDelete } from "../utils/fileDelete.js";
 
 export const getComments = async (req, res) => {

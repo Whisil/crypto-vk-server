@@ -1,4 +1,4 @@
-import User from "../models/user.js";
+import User from "../models/User.js";
 import { fileDelete } from "../utils/fileDelete.js";
 
 const urlParser = (url) => {

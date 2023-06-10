@@ -21,12 +21,14 @@ global.__dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 
 app.use(compression());
-app.use(
-  helmet.crossOriginResourcePolicy({ policy: "cross-origin" })
-);
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(express.static("public"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://crypto-vk.vercel.app", "http://localhost:3000"],
+  })
+);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", extractUserId, userRoutes);

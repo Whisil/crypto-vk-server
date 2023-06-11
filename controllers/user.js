@@ -35,6 +35,24 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const getUsersForShowcase = async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.userId).select(
+      "follows"
+    );
+
+    const users = await User.find({
+      _id: { $nin: currentUser.follows, $ne: req.userId },
+    })
+      .limit(8)
+      .select("displayName ethAddress avatarURL username");
+
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+
 export const getUserPosts = async (req, res) => {
   const userWallet = req.params.userWallet;
 

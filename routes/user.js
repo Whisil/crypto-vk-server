@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getUser,
+  getUsersForShowcase,
   getUserPosts,
   setSettings,
   createFollow,
@@ -10,6 +11,7 @@ import { upload } from "../utils/multer.js";
 
 const router = Router();
 
+router.get("/getShowcaseUsers", getUsersForShowcase);
 router.get("/:userWallet", getUser);
 router.get("/:userWallet/posts/:media?", getUserPosts);
 router.post("/settings", upload.array("files"), setSettings);

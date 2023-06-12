@@ -15,10 +15,12 @@ export const getPosts = async (req, res) => {
 
       res.status(200).json(post);
     } else {
-      const posts = await Post.find().populate(
-        "createdBy",
-        "-_id -posts -likes -createdAt -updatedAt -comments"
-      ).sort({ createdAt: -1 });
+      const posts = await Post.find()
+        .populate(
+          "createdBy",
+          "-_id -posts -likes -createdAt -updatedAt -comments"
+        )
+        .sort({ createdAt: -1 });
 
       res.status(200).json(posts);
     }
@@ -58,6 +60,34 @@ export const createPost = async (req, res) => {
     }
 
     res.status(409).json({ message: err.message });
+  }
+};
+
+export const savePost = async (req, res) => {
+  const postId = req.params.postId;
+  try {
+    await User.findOneAndUpdate(
+      { _id: req.userId },
+      { $push: { savedPosts: postId } }
+    );
+
+    res.status(200).end();
+  } catch (err) {
+    res.status(400).json({ err: err.message });
+  }
+};
+
+export const unsavePost = async (req, res) => {
+  const postId = req.params.postId;
+  try {
+    await User.findOneAndUpdate(
+      { _id: req.userId },
+      { $pull: { savedPosts: postId } }
+    );
+
+    res.status(200).end();
+  } catch (err) {
+    res.status(400).json({ err: err.message });
   }
 };
 

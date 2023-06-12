@@ -37,9 +37,7 @@ export const getUser = async (req, res) => {
 
 export const getUsersForShowcase = async (req, res) => {
   try {
-    const currentUser = await User.findById(req.userId).select(
-      "follows"
-    );
+    const currentUser = await User.findById(req.userId).select("follows");
 
     const users = await User.find({
       _id: { $nin: currentUser.follows, $ne: req.userId },
@@ -112,7 +110,9 @@ export const setSettings = async (req, res) => {
   }
 
   try {
-    const user = await User.findById(userId).select("-follows, -followers");
+    const user = await User.findById(userId).select(
+      "-follows, -followers, -posts, -savedPosts, -comments"
+    );
 
     if (!user) {
       res.status(404).json({ message: "User not found" }).end();
